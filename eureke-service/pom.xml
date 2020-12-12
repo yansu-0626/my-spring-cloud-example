@@ -52,6 +52,7 @@
             <artifactId>msc-common-log-starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <!--Lombok -->
     </dependencies>
 
     <dependencyManagement>

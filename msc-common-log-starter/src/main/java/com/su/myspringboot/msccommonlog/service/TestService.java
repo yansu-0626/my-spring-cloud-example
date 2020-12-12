@@ -20,4 +20,9 @@ public class TestService {
     public TestDTO test() {
         return testDTO;
     }
+
+    public String hello(){
+        return "hello";
+    }
+
 }

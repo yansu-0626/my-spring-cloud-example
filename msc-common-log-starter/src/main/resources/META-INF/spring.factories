@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.su.myspringboot.msccommonlog.RunLog,\
-  com.su.myspringboot.msccommonlog.config.TestAutoConfiguration
+  com.su.myspringboot.msccommonlog.config.TestAutoConfiguration,\
+com.su.myspringboot.msccommonlog.service.TestService,\
+  com.su.myspringboot.msccommonlog.service.Test1Service
