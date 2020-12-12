@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
+<!-- scan:当此属性设置为true时，配置文档如果发生改变，将会被重新加载，默认值为true -->
+<!-- scanPeriod:设置监测配置文档是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。
+                 当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
+<!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
+<configuration  scan="true" scanPeriod="10 seconds">
+	<contextName>logback</contextName>
+<!--	&lt;!&ndash;日志格式应用spring boot默认的格式，也可以自己更改&ndash;&gt;-->
+<!--	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>-->
+	<!-- 设置 -->
+	<springProperty scope="context" name="LOG_NAME" source="spring.application.name" defaultValue="eurekaServer" />
+	<!--定义日志存放的位置，默认存放在项目启动的相对路径的目录-->
+	<springProperty scope="context" name="LOG_HOME" source="logging.file.path" defaultValue="./app_logs/eurekaServer/"/>
+	<!-- 日志级别 主要控制日志的打印 目前支持 error warn info debug  -->
+	<property name="LOG_LEVEL" value="info" />
+	<!--
+		日志输出格式：
+		%d表示日期时间，
+		%thread表示线程名，
+		%-5level：级别从左显示5个字符宽度
+		%logger{50} 表示logger名字最长50个字符，否则按照句点分割。
+		%msg：日志消息，
+		%n是换行符
+	-->
+<!--    %d{yyyy-MM-dd HH:mm:ss.SSS}|[%t]|%-5level|traceID:%X{traceID}|uIP:%X{uIP}|sip:$${sys:sIP}|%c|%M|line:%L|%m%n-->
+	<property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}|%-5level|${PID:- }|[%thread]|%c|%M|line:%L: %msg%n" />
+
+	<!--0. 日志格式和颜色渲染 -->
+	<!-- 彩色日志依赖的渲染类 -->
+	<conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+	<conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+	<conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+	<!-- 彩色日志格式 -->
+<!--    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint}|%clr(${LOG_LEVEL_PATTERN:-%5p})|%clr(${PID:- }){magenta}|%clr(-&#45;&#45;){faint}|%clr([%15.15t]){faint}|%clr(%-40.40logger{39}){cyan}|%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>-->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint}|%clr(${LOG_LEVEL_PATTERN:-%5p})|%clr(${PID:- }){magenta}|%clr([%15.15t]){faint}|%clr(%-60.60c{60}){cyan}|%clr(%-26.26M{25}){yellow}|%clr(line:%L){green}|%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+
+	<!-- 控制台输出 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>debug</level>
+		</filter>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!-- 格式化输出：%d：表示日期，%thread：表示线程名，%level：日志级别，%C：类 ，%M方法%L：行号，%msg：日志消息，%n：是换行符 -->
+			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+			<!-- 设置字符集 -->
+<!--         打包Windows下中文不乱码   -->
+<!--			<charset class="java.nio.charset.Charset">GBK</charset>-->
+			<charset>UTF-8</charset>
+<!--			https://blog.csdn.net/leondryu/article/details/81478114-->
+		</encoder>
+	</appender>
+
+	<!-- INFO日志文件输出到文件 每天生成日志文件 -->
+	<appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 追加方式记录日志 -->
+		<append>true</append>
+		<!-- 正在记录的日志文档的路径及文档名 -->
+		<file>${LOG_HOME}/${LOG_NAME}_info.log</file>
+		<!--过滤器,只打INFO级别的日志-->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy" >
+			<!-- 每天日志归档路径以及格式 -->
+			<FileNamePattern>${LOG_HOME}/${LOG_NAME}_info_%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!--日志文档保留天数-->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<!--日志文档输出格式-->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<!-- DEBUG日志文件输出到文件 每天生成日志文件 -->
+	<appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 追加方式记录日志 -->
+		<append>true</append>
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${LOG_HOME}/${LOG_NAME}_debug.log</file>
+		<!--过滤器,只打DEBUG级别的日志-->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy" >
+            <!-- 日志归档 -->
+			<FileNamePattern>${LOG_HOME}/${LOG_NAME}_debug_%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+        <!--日志文档输出格式-->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+    <!-- 2.3 level为 WARN 日志，时间滚动输出  -->
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 追加方式记录日志 -->
+		<append>true</append>
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${LOG_HOME}/${LOG_NAME}_warn.log</file>
+		<!-- 此日志文档只记录warn级别的 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>warn</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${LOG_NAME}_warn_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+		<!--日志文档输出格式-->
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+    </appender>
+
+	<!-- ERROR日志文件输出到文件 每天生成日志文件 -->
+	<appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 追加方式记录日志 -->
+		<append>true</append>
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${LOG_HOME}/${LOG_NAME}_error.log</file>
+		<!--过滤器,只打ERROR级别的日志-->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy" >
+			<FileNamePattern>${LOG_HOME}/${LOG_NAME}_error_%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+        <!--日志文档输出格式-->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<!-- 日志输出级别  debug级别 info和debug文件都打印；info级别只打印info文件 -->
+    <!-- default log  level:日志输出级别，共有8个级别，按照从低到高为：All < Trace < Debug < Info < Warn < Error < Fatal < OFF. -->
+	<root level="${LOG_LEVEL}">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="DEBUG_FILE" />
+		<appender-ref ref="INFO_FILE" />
+		<appender-ref ref="ERROR_FILE" />
+        <appender-ref ref="WARN_FILE" />
+	</root>
+</configuration>
