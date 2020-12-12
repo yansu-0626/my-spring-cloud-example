@@ -35,3 +35,7 @@ logging:
     root: info
 #  file:
 #    path: E:/${spring.application.name}/temp/logs/
+
+#str:
+#  str1: 为什么我的眼里常含泪水
+#  str2: 那是因为我对你爱的深沉

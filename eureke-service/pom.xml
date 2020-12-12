@@ -49,7 +49,7 @@
 
         <dependency>
             <groupId>com.su.myspringboot</groupId>
-            <artifactId>msc-common-log</artifactId>
+            <artifactId>msc-common-log-starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
