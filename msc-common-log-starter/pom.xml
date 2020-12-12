@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.su.myspringboot</groupId>
-    <artifactId>msc-common-log</artifactId>
+    <artifactId>msc-common-log-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>${artifactId}-${version}</name>
     <description>核心包之统一处理日志打印格式</description>
@@ -31,6 +31,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
     </dependencies>
 
