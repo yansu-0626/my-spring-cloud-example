@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: consumers-service
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/
+      # 是否将自己注册到Eureka Server，默认为true。由于当前应用就是Eureka Server，故而设为false
+    registerWithEureka: true
+    # 表示是否从Eureka Sever获取注册信息，默认为true。因为这个一个单节点的Eureka Server，不需要同步其他的Eureka Server节点的数据，故而设为false
+    fetchRegistry: false
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+
+# 加载所有的端点/默认Spring Boot2.x中只加载了 info / health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+    shutdown:
+      enabled: false
+
+#actuator 信息
+info:
+  app:
+    name: "@project.artifactId@"
+    encoding: '@project.build.sourceEncoding@'
+    java:
+      source: '@java.version@'
+      target: '@java.version@'
+debug: false
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    root: info
+#  file:
+#    path: E:/${spring.application.name}/temp/logs/
+
+#str:
+#  str1: 为什么我的眼里常含泪水
+#  str2: 那是因为我对你爱的深沉
