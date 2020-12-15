@@ -97,10 +97,12 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- 测试插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <!-- 跳过测试 默认情况下，surefire会执行文件名以Test开头或结尾的测试用例，或者是以TestCase结尾的测试用例 -->
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
@@ -115,8 +117,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <!-- 加入skip标签，取消生成可执行jar-->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
+        <!-- 引入资源 -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
