@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: eurekaServer
+
+server:
+  port: 8761
+
+# 加载所有的端点/默认Spring Boot2.x中只加载了 info / health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /Myactuator # 自定义管理端点的前缀(保证安全)
+  endpoint:
+    health:
+      show-details: ALWAYS
+    shutdown:
+      enabled: true
+  server:
+    port: 18761
+    address: 127.0.0.1 # 不允许远程管理连接(不允许外部调用保证安全)
+
+#actuator 信息
+info:
+  app:
+    name: "@project.artifactId@-@version@-@profilesActive@"
+    encoding: '@project.build.sourceEncoding@'
+    java:
+      source: '@java.version@'
+      target: '@java.version@'
+
+debug: false
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    root: info
+    #  file:
+    #    path: E:/${spring.application.name}/temp/logs/
+
+str:
+  str1: str-str-boots
+  str2: str-str1-boots

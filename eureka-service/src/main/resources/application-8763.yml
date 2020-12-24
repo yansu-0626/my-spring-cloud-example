@@ -1,0 +1,33 @@
+
+server:
+  port: 8763
+
+eureka:
+  instance:
+    # eureka服务端的实例名称
+    hostname: eureka8763.com
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    # 是否将自己注册到Eureka Server，默认为true。由于当前应用就是Eureka Server，故而设为false
+    registerWithEureka: true
+    # 表示是否从Eureka Sever获取注册信息，默认为true。因为这个一个单节点的Eureka Server，不需要同步其他的Eureka Server节点的数据，故而设为false
+    fetchRegistry: true
+    serviceUrl:
+      # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。
+      # 单机
+      #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://eureka8761.com:8761/eureka/,http://eureka8762.com:8762/eureka/
+  server:
+    # 默认配置中，Eureka Server在默认90s没有得到客户端的心跳，则注销该实例。开启下面配置后Eureka Server节点在短时间内丢失过多的客户端时（可能发送了网络故障），那么这个节点将进入自我保护模式，不再注销任何微服务，当网络故障回复后，该节点会自动退出自我保护模式
+    enable-self-preservation: false
+
+# 加载所有的端点/默认Spring Boot2.x中只加载了 info / health
+management:
+  server:
+    port: 18763
+    address: 127.0.0.1 # 不允许远程管理连接(不允许外部调用保证安全)
+
+str:
+  str1: str-str1
+  str2: str-str2

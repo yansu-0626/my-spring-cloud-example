@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: msc-common-log-starter
+
+server:
+  port: 9876

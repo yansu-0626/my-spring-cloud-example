@@ -106,6 +106,7 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
+            <!-- 将Spring Boot应用打包为可执行的jar或war文件，然后以通常的方式运行Spring Boot应用。 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -113,6 +114,7 @@
                 <executions>
                     <execution>
                         <goals>
+                            <!-- repackage：创建一个自动可执行的jar或war文件。它可以替换常规的artifact，或者用一个单独的classifier附属在maven构建的生命周期中 -->
                             <goal>repackage</goal>
                         </goals>
                     </execution>
@@ -125,8 +127,14 @@
         </plugins>
         <!-- 引入资源 -->
         <resources>
+            <!--打包时排除resources下的application.yml资源文件-->
             <resource>
                 <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>application-*.yml</exclude>
+                    <exclude>application.yml</exclude>
+                </excludes>
             </resource>
             <resource>
                 <directory>src/main/java</directory>

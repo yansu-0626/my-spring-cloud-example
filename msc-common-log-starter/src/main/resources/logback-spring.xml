@@ -9,7 +9,7 @@
 <!--	&lt;!&ndash;日志格式应用spring boot默认的格式，也可以自己更改&ndash;&gt;-->
 <!--	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>-->
 	<!-- 设置 -->
-	<springProperty scope="context" name="LOG_NAME" source="spring.application.name" defaultValue="" />
+	<springProperty scope="context" name="LOG_NAME" source="spring.application.name" defaultValue="defaultValueApp" />
 	<!--定义日志存放的位置，默认存放在项目启动的相对路径的目录-->
 	<springProperty scope="context" name="LOG_HOME" source="logging.file.path" defaultValue="./app_logs/"/>
 	<!-- 日志级别 主要控制日志的打印 目前支持 error warn info debug  -->
